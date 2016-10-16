@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wMainClass.cbWndExtra    = NULL;
 	wMainClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wMainClass.style         = CS_VREDRAW | CS_HREDRAW;
-	wMainClass.hIcon = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
+	wMainClass.hIcon         = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
 
 	if (!RegisterClassEx(&wMainClass))
 	{
@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		return 1;
 	}
 
-	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", MAIN_WINDOW_STYLE, CW_USEDEFAULT, CW_USEDEFAULT,
+	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		640, 480, NULL, NULL, hInst, NULL);
 
 	if (!hMainWnd)
@@ -50,6 +50,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	LPMINMAXINFO pInfo = NULL;
+	POINT MinWndSize;
+
 	switch (uMsg)
 	{
 	case WM_COMMAND:
@@ -58,6 +61,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		}
 		break;
+	case WM_GETMINMAXINFO:
+		pInfo = (LPMINMAXINFO)lParam;
+		MinWndSize = { 640, 480 };
+		pInfo->ptMinTrackSize = MinWndSize;
+		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(NULL);
 		break;
