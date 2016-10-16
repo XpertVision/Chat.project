@@ -154,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="MainICO.ico" />
-    <Image Include="MainICO.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc" />
