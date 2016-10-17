@@ -5,6 +5,9 @@ BOOL CALLBACK LogWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
+	/*HINSTANCE hRTFLib;
+	hRTFLib = */LoadLibrary(L"RICHED32.DLL");
+
 	MSG mMessage;
 	HWND hMainWnd;
 	HWND hLogWnd;
