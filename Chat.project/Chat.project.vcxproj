@@ -153,7 +153,9 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Logo.png" />
     <Image Include="MainICO.ico" />
+    <Image Include="SmallICO.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc" />
