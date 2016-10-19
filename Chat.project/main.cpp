@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		return 1;
 	}
 
-	hLogWnd = CreateWindow(L"BUTTON", L"LogOn", WS_CHILD | WS_VISIBLE, 292, 370, 56, 25, hMainWnd, NULL, hInst, NULL);
+	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 280, 295, 80, 80, hMainWnd, (HMENU)777, hInst, NULL);
 	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
 	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
 
@@ -77,6 +77,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HDC hdcMain;
 	PAINTSTRUCT pstMain;
 	RECT rMain;
+	LPDRAWITEMSTRUCT lpdrawstLogon;
 
 	HFONT hfSegoe = CreateFont(0, 0, FW_DONTCARE, FW_DONTCARE, 200, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH, L"Segoe UI");
@@ -86,6 +87,16 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	switch (uMsg)
 	{
+	case WM_CREATE:
+	{
+		hdcMain = GetDC(0);
+		int x, y;
+		x = GetDeviceCaps(hdcMain, HORZRES);
+		y = GetDeviceCaps(hdcMain, VERTRES);
+		SetWindowPos(hWnd, NULL, ((x - 640)/2), ((y - 480)/2), 0, 0, SWP_NOSIZE);
+		ReleaseDC(0, hdcMain);
+	}
+	break;
 	case WM_PAINT:
 	{
 		hdcMain = BeginPaint(hWnd, &pstMain);
@@ -108,6 +119,23 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &pstMain);
 	}
 		break;
+	case WM_DRAWITEM:
+	{
+		lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
+
+		switch (lpdrawstLogon->CtlID)
+		{
+		case 777:
+		{
+			HICON hiLogon = LoadIcon(hInst, MAKEINTRESOURCE(ID_LOGON_ICO));
+			HDC hdcLogon = CreateCompatibleDC(lpdrawstLogon->hDC);
+			SelectObject(hdcLogon, hiLogon);
+			StretchBlt(lpdrawstLogon->hDC, 0, 0, 80, 80, hdcLogon, 0, 0, 0, 0, SRCCOPY);
+		}
+		break;
+		}
+	}
+	break;
 	case WM_COMMAND:
 	//	switch (wParam)
 	//	{

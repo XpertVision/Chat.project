@@ -37,6 +37,9 @@
     <Image Include="SmallICO.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="LogonICO.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc">

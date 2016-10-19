@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Logo.png" />
+    <Image Include="LogonICO.ico" />
     <Image Include="MainICO.ico" />
     <Image Include="SmallICO.ico" />
   </ItemGroup>
