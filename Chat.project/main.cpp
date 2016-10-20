@@ -60,6 +60,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 292, 300, 56, 56, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
 	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
 	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
+	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 7);
+	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
 
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);

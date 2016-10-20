@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include <gdiplus.h>
+#include <Richedit.h>
 
 #pragma comment (lib,"Gdiplus.lib")
 
