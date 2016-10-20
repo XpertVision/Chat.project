@@ -58,10 +58,11 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 292, 300, 56, 56, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
-	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
+	hLogin = CreateWindowEx(WS_EX_WINDOWEDGE,L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
 	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
-	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 7);
+	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 15);
 	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
+	
 
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
@@ -114,8 +115,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		SelectObject(hdcMain, hfSegoe);
 
-		TextOut(hdcMain, 145, 270, L"Password", 8);
-		TextOut(hdcMain, 173, 190, L"Login", 5);
+		TextOutW(hdcMain, 145, 270, L"Password", 8);
+		TextOutW(hdcMain, 173, 190, L"Login", 5);
 
 		gdiGrLogo.DrawImage(gdiImgLogo, 256, 40, 128, 128);
 		delete gdiImgLogo;
