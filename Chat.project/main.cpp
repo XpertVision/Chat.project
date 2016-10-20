@@ -7,7 +7,8 @@ HWND hLogWnd;
 HWND hTxt;
 HWND hLogin;
 HWND hPass;
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
+
+INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	HINSTANCE hRTFLib;
 	hRTFLib = LoadLibrary(L"RICHED32.DLL");
@@ -76,10 +77,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdcMain;
 	PAINTSTRUCT pstMain;
-	RECT rMain;
+	//RECT rMain(NULL);
 
 	LPDRAWITEMSTRUCT lpdrawstLogon = NULL;
-	HDC hdcLogon;
+	//HDC hdcLogon;
 
 	HFONT hfSegoe = CreateFont(0, 0, FW_DONTCARE, FW_DONTCARE, 200, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH, L"Segoe UI");
@@ -105,8 +106,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		Gdiplus::Graphics gdiGrLogo(hdcMain);
 		Gdiplus::Image *gdiImgLogo = new Gdiplus::Image(L"Logo.png");
-
-		//GetClientRect(hWnd, &rMain);
 
 		SetTextColor(hdcMain, RGB(200, 200, 200));
 		SetBkColor(hdcMain, RGB(4, 37, 65));
@@ -176,12 +175,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-	/*case WM_COMMAND:
-		switch (wParam)
-		{
-
-		}
-		break;*/
 	case WM_GETMINMAXINFO:
 	{
 		pInfo = (LPMINMAXINFO)lParam;
