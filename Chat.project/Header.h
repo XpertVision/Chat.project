@@ -8,5 +8,6 @@
 
 #include "resource.h"
 
+#define ID_LOGON 777
 
 #endif // !_HEADER_H_
