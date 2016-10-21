@@ -71,7 +71,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	reFormat.cbSize = sizeof(reFormat);
 	reFormat.crTextColor = RGB(24,65,233);
 	reFormat.bUnderlineType = NULL;
-	reFormat.dwMask = CFM_BACKCOLOR | CFM_COLOR | CFM_SIZE | CFM_WEIGHT;
+	reFormat.dwMask = CFM_COLOR | CFM_SIZE | CFM_WEIGHT;
 	reFormat.dwEffects = NULL;
 	reFormat.yHeight = 200;
 	reFormat.wWeight = 0;
