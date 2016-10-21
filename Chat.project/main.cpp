@@ -41,7 +41,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wMainClass.style         = CS_VREDRAW | CS_HREDRAW;
 	wMainClass.hIcon         = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
 	wMainClass.hIconSm       = LoadIcon(hInst, MAKEINTRESOURCE(ID_SMALL_ICO));
-	wMainClass.hCursor       = NULL;
+	wMainClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
 
 
 	if (!RegisterClassEx(&wMainClass))
@@ -59,22 +59,25 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		return 1;
 	}
 
-	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 292, 300, 56, 56, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
-	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
-	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
+	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
+	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, NULL, hInst, NULL);
+	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInst, NULL);
 	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 16);
 	SendMessage(hPass, EM_EXLIMITTEXT, NULL, 24);
 	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
 	SendMessage(hPass, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
+	
+	wchar_t wFontName [] = L"Segoe UI";
 
-	CHARFORMAT2 reFormat;
+	CHARFORMAT2W reFormat;
 	reFormat.cbSize = sizeof(reFormat);
 	reFormat.crTextColor = RGB(24,65,233);
 	reFormat.bUnderlineType = NULL;
-	reFormat.dwMask = CFM_COLOR | CFM_SIZE | CFM_WEIGHT;
+	reFormat.dwMask = CFM_COLOR | CFM_SIZE | CFM_WEIGHT | CFM_FACE;
 	reFormat.dwEffects = NULL;
-	reFormat.yHeight = 200;
-	reFormat.wWeight = 0;
+	reFormat.yHeight = 220;
+	reFormat.wWeight = 200;
+	wcscpy_s(reFormat.szFaceName, sizeof(reFormat.szFaceName), wFontName);
 
 	SendMessage(hLogin, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	SendMessage(hPass, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
@@ -121,6 +124,20 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(0, hdcMain);
 	}
 	break;
+	case WM_COMMAND:
+	{
+		switch (wParam)
+		{
+		case 567:
+		{
+			MessageBeep(TRUE);
+		}
+		default:
+			break;
+		}
+
+	}
+	break;
 	case WM_PAINT:
 	{
 		hdcMain = BeginPaint(hWnd, &pstMain);
@@ -153,8 +170,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
 
 			Gdiplus::Graphics gdiGrLogon(lpdrawstLogon->hDC);
-			Gdiplus::Image *gdiImgLogon = new Gdiplus::Image(L"LogonICO.png");
-			gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+			Gdiplus::Image *gdiImgLogon = new Gdiplus::Image(L"LogonDef.png");
+			gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
 			delete gdiImgLogon;
 
 			switch (lpdrawstLogon->CtlID)
@@ -164,15 +181,16 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (lpdrawstLogon->itemState & ODS_SELECTED)
 				{
 					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-					gdiImgLogon = new Gdiplus::Image(L"LogonICO.ico");
-					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+					gdiImgLogon = new Gdiplus::Image(L"LogonClick.png");
+					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
 					delete gdiImgLogon;
+					SendMessage(hWnd, WM_COMMAND, 567, NULL);
 				}
 				else if (lpdrawstLogon->itemState & ODS_FOCUS)
 				{
 					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-					gdiImgLogon = new Gdiplus::Image(L"MainICO.ico");
-					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+					gdiImgLogon = new Gdiplus::Image(L"LogonSet.png");
+					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
 					delete gdiImgLogon;
 				}
 			}
