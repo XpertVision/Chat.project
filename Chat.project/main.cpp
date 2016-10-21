@@ -41,8 +41,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wMainClass.style         = CS_VREDRAW | CS_HREDRAW;
 	wMainClass.hIcon         = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
 	wMainClass.hIconSm       = LoadIcon(hInst, MAKEINTRESOURCE(ID_SMALL_ICO));
-	wMainClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
-
+	wMainClass.hCursor       = LoadCursor(hInst, IDC_ARROW);
 
 	if (!RegisterClassEx(&wMainClass))
 	{
@@ -104,8 +103,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LPDRAWITEMSTRUCT lpdrawstLogon = NULL;
 	//HDC hdcLogon;
 
-	//HFONT hfSegoe = CreateFont(0, 0, FW_DONTCARE, FW_DONTCARE, 200, FALSE, FALSE, FALSE,
-		//DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH, L"Segoe UI");
 	HFONT hfSegoe = CreateFont(22, 0, 0, 0, 200, 0, 0, 0, OEM_CHARSET, OUT_STRING_PRECIS, CLIP_DEFAULT_PRECIS
 		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, L"Segoe UI");
 
@@ -132,10 +129,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			MessageBeep(TRUE);
 		}
-		default:
-			break;
-		}
-
+		break;
+		default: break;
 	}
 	break;
 	case WM_PAINT:
