@@ -41,6 +41,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wMainClass.style         = CS_VREDRAW | CS_HREDRAW;
 	wMainClass.hIcon         = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
 	wMainClass.hIconSm       = LoadIcon(hInst, MAKEINTRESOURCE(ID_SMALL_ICO));
+	wMainClass.hCursor       = NULL;
+
 
 	if (!RegisterClassEx(&wMainClass))
 	{
