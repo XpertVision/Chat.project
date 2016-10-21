@@ -58,10 +58,24 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 292, 300, 56, 56, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
-	hLogin = CreateWindowEx(WS_EX_WINDOWEDGE,L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
-	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | FW_HEAVY | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
-	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 15);
+	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 190, 200, 20, hMainWnd, NULL, hInst, NULL);
+	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 270, 200, 20, hMainWnd, NULL, hInst, NULL);
+	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 16);
+	SendMessage(hPass, EM_EXLIMITTEXT, NULL, 24);
 	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
+	SendMessage(hPass, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
+
+	CHARFORMAT2 reFormat;
+	reFormat.cbSize = sizeof(reFormat);
+	reFormat.crTextColor = RGB(24,65,233);
+	reFormat.bUnderlineType = NULL;
+	reFormat.dwMask = CFM_BACKCOLOR | CFM_COLOR | CFM_SIZE | CFM_WEIGHT;
+	reFormat.dwEffects = NULL;
+	reFormat.yHeight = 200;
+	reFormat.wWeight = 0;
+
+	SendMessage(hLogin, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
+	SendMessage(hPass, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	
 
 	ShowWindow(hMainWnd, nCmdShow);
@@ -85,8 +99,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LPDRAWITEMSTRUCT lpdrawstLogon = NULL;
 	//HDC hdcLogon;
 
-	HFONT hfSegoe = CreateFont(0, 0, FW_DONTCARE, FW_DONTCARE, 200, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH, L"Segoe UI");
+	//HFONT hfSegoe = CreateFont(0, 0, FW_DONTCARE, FW_DONTCARE, 200, FALSE, FALSE, FALSE,
+		//DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH, L"Segoe UI");
+	HFONT hfSegoe = CreateFont(22, 0, 0, 0, 200, 0, 0, 0, OEM_CHARSET, OUT_STRING_PRECIS, CLIP_DEFAULT_PRECIS
+		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, L"Segoe UI");
 
 	LPMINMAXINFO pInfo = NULL;
 	POINT StartWndSize;
@@ -115,8 +131,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		SelectObject(hdcMain, hfSegoe);
 
-		TextOutW(hdcMain, 145, 270, L"Password", 8);
-		TextOutW(hdcMain, 173, 190, L"Login", 5);
+		SetTextAlign(hdcMain, TA_RIGHT);
+		TextOutW(hdcMain, 210, 270, L"Password", 8);
+		TextOutW(hdcMain, 210, 190, L"Login", 5);
+		SetTextAlign(hdcMain, TA_LEFT);
 
 		gdiGrLogo.DrawImage(gdiImgLogo, 256, 40, 128, 128);
 		delete gdiImgLogo;
@@ -128,33 +146,36 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
 
-		FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-
-		Gdiplus::Graphics gdiGrLogon(lpdrawstLogon->hDC);
-		Gdiplus::Image *gdiImgLogon = new Gdiplus::Image(L"LogonICO.png");
-		gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
-		delete gdiImgLogon;
-
-		switch (lpdrawstLogon->CtlID)
+		if (lpdrawstLogon->hwndItem == hLogWnd)
 		{
-		case ID_LOGON:
-		{
-			if (lpdrawstLogon->itemState & ODS_SELECTED)
+			FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
+
+			Gdiplus::Graphics gdiGrLogon(lpdrawstLogon->hDC);
+			Gdiplus::Image *gdiImgLogon = new Gdiplus::Image(L"LogonICO.png");
+			gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+			delete gdiImgLogon;
+
+			switch (lpdrawstLogon->CtlID)
 			{
-				FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-				gdiImgLogon = new Gdiplus::Image(L"LogonICO.ico");
-				gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
-				delete gdiImgLogon;
-			}
-			else if (lpdrawstLogon->itemState & ODS_FOCUS)
+			case ID_LOGON:
 			{
-				FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-				gdiImgLogon = new Gdiplus::Image(L"MainICO.ico");
-				gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
-				delete gdiImgLogon;
+				if (lpdrawstLogon->itemState & ODS_SELECTED)
+				{
+					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
+					gdiImgLogon = new Gdiplus::Image(L"LogonICO.ico");
+					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+					delete gdiImgLogon;
+				}
+				else if (lpdrawstLogon->itemState & ODS_FOCUS)
+				{
+					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
+					gdiImgLogon = new Gdiplus::Image(L"MainICO.ico");
+					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 56, 56);
+					delete gdiImgLogon;
+				}
 			}
-		}
-		break;
+			break;
+			}
 		}
 	}
 	break;
