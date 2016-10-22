@@ -41,7 +41,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wMainClass.style         = CS_VREDRAW | CS_HREDRAW;
 	wMainClass.hIcon         = LoadIcon(hInst, MAKEINTRESOURCE(ID_MAIN_ICO));
 	wMainClass.hIconSm       = LoadIcon(hInst, MAKEINTRESOURCE(ID_SMALL_ICO));
-	wMainClass.hCursor       = LoadCursor(hInst, IDC_ARROW);
+	wMainClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
 
 	if (!RegisterClassEx(&wMainClass))
 	{
@@ -117,7 +117,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		int x, y;
 		x = GetDeviceCaps(hdcMain, HORZRES);
 		y = GetDeviceCaps(hdcMain, VERTRES);
-		SetWindowPos(hWnd, NULL, ((x - 640)/2), ((y - 480)/2), 0, 0, SWP_NOSIZE);
+		SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
 		ReleaseDC(0, hdcMain);
 	}
 	break;
@@ -131,8 +131,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 		default: break;
-	}
-	break;
+		}
+		break;
 	case WM_PAINT:
 	{
 		hdcMain = BeginPaint(hWnd, &pstMain);
@@ -155,7 +155,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		EndPaint(hWnd, &pstMain);
 	}
-		break;
+	break;
 	case WM_DRAWITEM:
 	{
 		lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
@@ -212,6 +212,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SetFocus(hFocused);
 			}
 		}
+		DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 	break;
 	case WM_GETMINMAXINFO:
@@ -231,4 +232,5 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return NULL;
+	}
 }
