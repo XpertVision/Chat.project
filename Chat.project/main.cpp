@@ -1,6 +1,7 @@
 #include "Header.h"
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 HINSTANCE hInst;
 HWND hLogWnd;
@@ -59,8 +60,9 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
-	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, NULL, hInst, NULL);
+	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, (HMENU)123, hInst, NULL);
 	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInst, NULL);
+
 	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 16);
 	SendMessage(hPass, EM_EXLIMITTEXT, NULL, 24);
 	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
@@ -76,11 +78,12 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	reFormat.dwEffects = NULL;
 	reFormat.yHeight = 220;
 	reFormat.wWeight = 200;
-	wcscpy_s(reFormat.szFaceName, sizeof(reFormat.szFaceName), wFontName);
+	wcscpy_s(reFormat.szFaceName, sizeof(wFontName), wFontName);
 
 	SendMessage(hLogin, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	SendMessage(hPass, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	
+	//SetWindowLongPtr(hLogin, GWLP_WNDPROC, (LONG_PTR)LoginEditProc);
 
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
@@ -233,4 +236,23 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	return NULL;
 	}
+}
+
+LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	/*case WM_COMMAND:
+	{
+		if (HIWORD(wParam) == EN_CHANGE)
+		{
+			MessageBeep(TRUE);
+		}
+	}
+	break;*/
+	default:
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);;
+	}
+
+	return 0;
 }
