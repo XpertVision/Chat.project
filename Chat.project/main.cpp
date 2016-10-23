@@ -8,6 +8,7 @@ HWND hLogWnd;
 HWND hTxt;
 HWND hLogin;
 HWND hPass;
+WNDPROC wpLogin;
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -83,7 +84,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	SendMessage(hLogin, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	SendMessage(hPass, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
 	
-	//SetWindowLongPtr(hLogin, GWLP_WNDPROC, (LONG_PTR)LoginEditProc);
+	wpLogin = (WNDPROC)GetWindowLongPtr(hLogin, GWLP_WNDPROC);
+	SetWindowLongPtr(hLogin, GWLP_WNDPROC, (LONG_PTR)LoginEditProc);
 
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
@@ -242,16 +244,13 @@ LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 {
 	switch (uMsg)
 	{
-	/*case WM_COMMAND:
+	case WM_KEYDOWN:
 	{
-		if (HIWORD(wParam) == EN_CHANGE)
-		{
-			MessageBeep(TRUE);
-		}
+		MessageBeep(TRUE);
 	}
-	break;*/
+	break;
 	default:
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);;
+		return CallWindowProc(wpLogin, hWnd, uMsg, wParam, lParam);
 	}
 
 	return 0;
