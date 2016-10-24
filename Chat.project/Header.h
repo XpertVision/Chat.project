@@ -8,6 +8,7 @@
 #pragma comment (lib,"Gdiplus.lib")
 
 #include "resource.h"
+#include "LogPassChar.h"
 
 #define ID_LOGON 777
 

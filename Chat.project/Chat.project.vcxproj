@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
+    <ClInclude Include="LogPassChar.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

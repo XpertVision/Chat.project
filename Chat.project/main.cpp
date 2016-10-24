@@ -2,6 +2,8 @@
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 HINSTANCE hInst;
 HWND hLogWnd;
@@ -9,6 +11,10 @@ HWND hTxt;
 HWND hLogin;
 HWND hPass;
 WNDPROC wpLogin;
+WNDPROC wpPass;
+WNDPROC wpLogon;
+
+HWND hMainWnd;
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -22,7 +28,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	MSG mMessage;
-	HWND hMainWnd;
+	//HWND hMainWnd;
 
 	TCHAR mainWndClassName[] = L"Chat.project";
 
@@ -87,6 +93,12 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wpLogin = (WNDPROC)GetWindowLongPtr(hLogin, GWLP_WNDPROC);
 	SetWindowLongPtr(hLogin, GWLP_WNDPROC, (LONG_PTR)LoginEditProc);
 
+	wpPass = (WNDPROC)GetWindowLongPtr(hPass, GWLP_WNDPROC);
+	SetWindowLongPtr(hPass, GWLP_WNDPROC, (LONG_PTR)LoginPassProc);
+
+	wpLogon = (WNDPROC)GetWindowLongPtr(hLogWnd, GWLP_WNDPROC);
+	SetWindowLongPtr(hLogWnd, GWLP_WNDPROC, (LONG_PTR)LogonProc);
+
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
 
@@ -126,18 +138,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(0, hdcMain);
 	}
 	break;
-	case WM_COMMAND:
-	{
-		switch (wParam)
-		{
-		case 567:
-		{
-			MessageBeep(TRUE);
-		}
-		break;
-		default: break;
-		}
-		break;
 	case WM_PAINT:
 	{
 		hdcMain = BeginPaint(hWnd, &pstMain);
@@ -161,6 +161,14 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &pstMain);
 	}
 	break;
+	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == ID_LOGON && HIWORD(wParam) == BN_CLICKED)
+		{
+			MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
+		}
+	}
+	break;
 	case WM_DRAWITEM:
 	{
 		lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
@@ -178,15 +186,14 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 			case ID_LOGON:
 			{
-				if (lpdrawstLogon->itemState & ODS_SELECTED)
+				/*if (lpdrawstLogon->itemState & ODS_SELECTED)
 				{
 					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
 					gdiImgLogon = new Gdiplus::Image(L"LogonClick.png");
 					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
 					delete gdiImgLogon;
-					SendMessage(hWnd, WM_COMMAND, 567, NULL);
 				}
-				else if (lpdrawstLogon->itemState & ODS_FOCUS)
+				else */if (lpdrawstLogon->itemState & ODS_FOCUS)
 				{
 					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
 					gdiImgLogon = new Gdiplus::Image(L"LogonSet.png");
@@ -237,21 +244,79 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return NULL;
-	}
 }
 
 LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
-	case WM_KEYDOWN:
+	case WM_CHAR:
 	{
-		MessageBeep(TRUE);
+		if (wParam == VK_TAB)
+		{
+			SetFocus(hPass);
+		}
+		else if (search(wchAccesChar, wParam, sizeof(wchAccesChar)))
+		{
+			return CallWindowProc(wpLogin, hWnd, uMsg, wParam, lParam);
+		}
 	}
 	break;
 	default:
 		return CallWindowProc(wpLogin, hWnd, uMsg, wParam, lParam);
 	}
 
+	return 0;
+}
+
+LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_CHAR:
+	{
+		if (wParam == VK_TAB)
+		{
+			SetFocus(hLogWnd);
+			break;
+		}
+		else if (search(wchAccesChar, wParam, sizeof(wchAccesChar)))
+		{
+			return CallWindowProc(wpPass, hWnd, uMsg, wParam, lParam);
+		}
+	}
+	break;
+	default:
+		return CallWindowProc(wpPass, hWnd, uMsg, wParam, lParam);
+	}
+
+	return 0;
+}
+
+LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_KEYDOWN:
+	if (wParam == VK_TAB)
+		{
+			SetFocus(hLogin);
+		}
+		else if (wParam == VK_RETURN)
+		{
+			SendNotifyMessage(hMainWnd, WM_COMMAND, ID_LOGON | BN_CLICKED, NULL);
+		}
+	break;
+	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == ID_LOGON)
+		{
+			MessageBox(NULL, L"YES\n!", L"OK", MB_OK);
+		}
+	}
+	break;
+	default:
+		return CallWindowProc(wpLogon, hLogWnd, uMsg, wParam, lParam);
+	}
 	return 0;
 }
