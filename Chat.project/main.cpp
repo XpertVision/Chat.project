@@ -158,6 +158,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		gdiGrLogo.DrawImage(gdiImgLogo, 256, 40, 128, 128);
 		delete gdiImgLogo;
 
+		gdiImgLogo = new Gdiplus::Image(L"ConnectingAnim.gif");
+		gdiGrLogo.DrawImage(gdiImgLogo, 56, 40, 320, 180);
+
+		delete gdiImgLogo;
+
 		EndPaint(hWnd, &pstMain);
 	}
 	break;
