@@ -6,11 +6,26 @@ Gdiplus::Image* LImgRes::GetImg(int RES_ID, HINSTANCE hInst)
 	hRes = LoadResource(hInst, hResInfo);
 	lpvResMem = LockResource(hRes);
 	ImgSize = SizeofResource(hInst, hResInfo);
-	cpvResData = LockResource(LoadResource(hInst, hResInfo));
-	CreateStreamOnHGlobal(cpvResData, FALSE, &pStream);
 
-	//ImgFromRes = 0;
+	pvBuff = new byte[ImgSize];
+
+	cpvResData = LockResource(LoadResource(hInst, hResInfo));
+
+	memcpy_s(pvBuff, ImgSize, cpvResData, ImgSize);
+
+	CreateStreamOnHGlobal(pvBuff, FALSE, &pStream);
+
 	ImgFromRes = Gdiplus::Image::FromStream(pStream);
 
 	return ImgFromRes;
 }
+
+void LImgRes::Release()
+{
+	if (pvBuff)
+	{
+		delete pvBuff;
+	}
+}
+
+LImgRes SimpleImgLoad;

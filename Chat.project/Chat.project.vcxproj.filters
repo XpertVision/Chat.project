@@ -21,6 +21,9 @@
     <ClCompile Include="LoadImgRes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogPassChar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h">

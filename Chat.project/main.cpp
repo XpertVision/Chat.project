@@ -115,8 +115,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LImgRes tres;
-
 	HDC hdcMain;
 	PAINTSTRUCT pstMain;
 	//RECT rMain(NULL);
@@ -147,7 +145,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hdcMain = BeginPaint(hWnd, &pstMain);
 
 		Gdiplus::Graphics gdiGrLogo(hdcMain);
-		Gdiplus::Image *gdiImgLogo = new Gdiplus::Image(L"Logo.png");
 
 		SetTextColor(hdcMain, RGB(200, 200, 200));
 		SetBkColor(hdcMain, RGB(4, 37, 65));
@@ -159,13 +156,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		TextOutW(hdcMain, 210, 190, L"Login", 5);
 		SetTextAlign(hdcMain, TA_LEFT);
 
-		gdiGrLogo.DrawImage(gdiImgLogo, 256, 40, 128, 128);
-		//delete gdiImgLogo;
-
-		//gdiImgLogo = new Gdiplus::Image(L"ConnectingAnim.gif");
-		gdiGrLogo.DrawImage(tres.GetImg(ID_LOGO, hInstCopy), 56, 40, 128, 128);
-
-		delete gdiImgLogo;
+		gdiGrLogo.DrawImage(SimpleImgLoad.GetImg(ID_LOGO, hInstCopy), 256, 40, 128, 128);
+		SimpleImgLoad.Release();
 
 		EndPaint(hWnd, &pstMain);
 	}
