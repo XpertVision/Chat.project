@@ -10,6 +10,8 @@
 #include "resource.h"
 #include "LogPassChar.h"
 
+#include "LoadImgRes.h"
+
 #define ID_LOGON 777
 
 #endif // !_HEADER_H_

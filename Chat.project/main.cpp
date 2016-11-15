@@ -5,7 +5,7 @@ LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-HINSTANCE hInst;
+HINSTANCE hInstCopy;
 HWND hLogWnd;
 HWND hTxt;
 HWND hLogin;
@@ -56,6 +56,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		MessageBox(NULL, L"Window class don't register", L"Error", MB_OK);
 		return 1;
 	}
+
+	hInstCopy = hInst;
 
 	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		640, 480, NULL, NULL, hInst, NULL);
@@ -113,6 +115,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	LImgRes tres;
+
 	HDC hdcMain;
 	PAINTSTRUCT pstMain;
 	//RECT rMain(NULL);
@@ -156,10 +160,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetTextAlign(hdcMain, TA_LEFT);
 
 		gdiGrLogo.DrawImage(gdiImgLogo, 256, 40, 128, 128);
-		delete gdiImgLogo;
+		//delete gdiImgLogo;
 
-		gdiImgLogo = new Gdiplus::Image(L"ConnectingAnim.gif");
-		gdiGrLogo.DrawImage(gdiImgLogo, 56, 40, 320, 180);
+		//gdiImgLogo = new Gdiplus::Image(L"ConnectingAnim.gif");
+		gdiGrLogo.DrawImage(tres.GetImg(ID_LOGO, hInstCopy), 56, 40, 128, 128);
 
 		delete gdiImgLogo;
 
