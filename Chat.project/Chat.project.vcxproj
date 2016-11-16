@@ -159,12 +159,17 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Logo.png" />
+    <Image Include="LogonDef.png" />
     <Image Include="LogonICO.ico" />
+    <Image Include="LogonSet.png" />
     <Image Include="MainICO.ico" />
     <Image Include="SmallICO.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rcdata1.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

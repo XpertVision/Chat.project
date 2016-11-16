@@ -16,6 +16,8 @@ WNDPROC wpLogon;
 
 HWND hMainWnd;
 
+static int qwe = 1;
+
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	HINSTANCE hRTFLib;
@@ -136,7 +138,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		int x, y;
 		x = GetDeviceCaps(hdcMain, HORZRES);
 		y = GetDeviceCaps(hdcMain, VERTRES);
+
 		SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
+		
 		ReleaseDC(0, hdcMain);
 	}
 	break;
@@ -167,6 +171,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == ID_LOGON && HIWORD(wParam) == BN_CLICKED)
 		{
 			MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
+			qwe = 0;
+			SendMessage(hWnd, WM_CREATE, wParam, lParam);
 		}
 	}
 	break;
@@ -177,29 +183,19 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (lpdrawstLogon->hwndItem == hLogWnd)
 		{
 			FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-
 			Gdiplus::Graphics gdiGrLogon(lpdrawstLogon->hDC);
-			Gdiplus::Image *gdiImgLogon = new Gdiplus::Image(L"LogonDef.png");
-			gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
-			delete gdiImgLogon;
+			gdiGrLogon.DrawImage(SimpleImgLoad.GetImg(ID_LOGON_DEF, hInstCopy), 0, 0, 48, 48);
+			SimpleImgLoad.Release();
 
 			switch (lpdrawstLogon->CtlID)
 			{
 			case ID_LOGON:
 			{
-				/*if (lpdrawstLogon->itemState & ODS_SELECTED)
+				if (lpdrawstLogon->itemState & ODS_FOCUS)
 				{
 					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-					gdiImgLogon = new Gdiplus::Image(L"LogonClick.png");
-					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
-					delete gdiImgLogon;
-				}
-				else */if (lpdrawstLogon->itemState & ODS_FOCUS)
-				{
-					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-					gdiImgLogon = new Gdiplus::Image(L"LogonSet.png");
-					gdiGrLogon.DrawImage(gdiImgLogon, 0, 0, 48, 48);
-					delete gdiImgLogon;
+					gdiGrLogon.DrawImage(SimpleImgLoad.GetImg(ID_LOGON_SET, hInstCopy), 0, 0, 48, 48);
+					SimpleImgLoad.Release();
 				}
 			}
 			break;

@@ -52,10 +52,21 @@
     <Image Include="LogonICO.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="LogonDef.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogonSet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rcdata1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

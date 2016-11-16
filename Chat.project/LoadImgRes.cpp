@@ -5,6 +5,7 @@ Gdiplus::Image* LImgRes::GetImg(int RES_ID, HINSTANCE hInst)
 	hResInfo = FindResource(hInst, MAKEINTRESOURCE(RES_ID), RT_RCDATA);
 	hRes = LoadResource(hInst, hResInfo);
 	lpvResMem = LockResource(hRes);
+
 	ImgSize = SizeofResource(hInst, hResInfo);
 
 	pvBuff = new byte[ImgSize];
@@ -23,9 +24,13 @@ Gdiplus::Image* LImgRes::GetImg(int RES_ID, HINSTANCE hInst)
 void LImgRes::Release()
 {
 	if (pvBuff)
-	{
 		delete pvBuff;
-	}
+	if (pStream)
+		pStream->Release();
+	if(ImgFromRes)
+		delete ImgFromRes;
+	//if (cpvResData)
+	//	delete cpvResData;
 }
 
 LImgRes SimpleImgLoad;
