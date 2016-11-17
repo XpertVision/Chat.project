@@ -16,7 +16,7 @@ WNDPROC wpLogon;
 
 HWND hMainWnd;
 
-static int qwe = 1;
+int nCmdShowCopy;
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -30,7 +30,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	MSG mMessage;
-	//HWND hMainWnd;
 
 	TCHAR mainWndClassName[] = L"Chat.project";
 
@@ -60,6 +59,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	}
 
 	hInstCopy = hInst;
+	nCmdShowCopy = nCmdShow;
 
 	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		640, 480, NULL, NULL, hInst, NULL);
@@ -130,75 +130,137 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LPMINMAXINFO pInfo = NULL;
 	POINT StartWndSize;
 
+	static Gdiplus::Graphics* gdiImg = NULL;
+
+	static int iWindowType(LOGIN_WINDOW);
+
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
-		hdcMain = GetDC(0);
-		int x, y;
-		x = GetDeviceCaps(hdcMain, HORZRES);
-		y = GetDeviceCaps(hdcMain, VERTRES);
+		if (iWindowType == LOGIN_WINDOW)
+		{
+			hdcMain = GetDC(0);
+			int x, y;
+			x = GetDeviceCaps(hdcMain, HORZRES);
+			y = GetDeviceCaps(hdcMain, VERTRES);
 
-		SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
-		
-		ReleaseDC(0, hdcMain);
+			SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
+
+			ReleaseDC(0, hdcMain);
+		}
+		else if (iWindowType == CHAT_WINDOW)
+		{
+			hdcMain = GetDC(0);
+			int x, y;
+			x = GetDeviceCaps(hdcMain, HORZRES);
+			y = GetDeviceCaps(hdcMain, VERTRES);
+
+			SetWindowPos(hWnd, NULL, ((x - 800) / 2), ((y - 640) / 2), 0, 0, SWP_NOSIZE);
+
+			ReleaseDC(0, hdcMain);
+
+			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
+			DestroyWindow(hLogin);
+			DestroyWindow(hPass);
+			DestroyWindow(hLogWnd);
+
+			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
+		}
 	}
 	break;
 	case WM_PAINT:
 	{
-		hdcMain = BeginPaint(hWnd, &pstMain);
+		if (iWindowType == LOGIN_WINDOW)
+		{
+			hdcMain = BeginPaint(hWnd, &pstMain);
 
-		Gdiplus::Graphics gdiGrLogo(hdcMain);
+			SetTextColor(hdcMain, RGB(200, 200, 200));
+			SetBkColor(hdcMain, RGB(4, 37, 65));
 
-		SetTextColor(hdcMain, RGB(200, 200, 200));
-		SetBkColor(hdcMain, RGB(4, 37, 65));
+			SelectObject(hdcMain, hfSegoe);
 
-		SelectObject(hdcMain, hfSegoe);
+			SetTextAlign(hdcMain, TA_RIGHT);
+			TextOutW(hdcMain, 210, 270, L"Password", 8);
+			TextOutW(hdcMain, 210, 190, L"Login", 5);
+			SetTextAlign(hdcMain, TA_LEFT);
 
-		SetTextAlign(hdcMain, TA_RIGHT);
-		TextOutW(hdcMain, 210, 270, L"Password", 8);
-		TextOutW(hdcMain, 210, 190, L"Login", 5);
-		SetTextAlign(hdcMain, TA_LEFT);
+			gdiImg = new Gdiplus::Graphics(hdcMain);
 
-		gdiGrLogo.DrawImage(SimpleImgLoad.GetImg(ID_LOGO, hInstCopy), 256, 40, 128, 128);
-		SimpleImgLoad.Release();
+			gdiImg->DrawImage(SimpleImgLoad.GetImg(ID_LOGO, hInstCopy), 256, 40, 128, 128);
+			SimpleImgLoad.Release();
 
-		EndPaint(hWnd, &pstMain);
+			delete gdiImg;
+
+			EndPaint(hWnd, &pstMain);
+		}
+		else if (iWindowType == CHAT_WINDOW)
+		{
+			hdcMain = BeginPaint(hWnd, &pstMain);
+
+			SetBkColor(hdcMain, RGB(4, 37, 65));
+
+			EndPaint(hWnd, &pstMain);
+		}
 	}
 	break;
 	case WM_COMMAND:
 	{
 		if (LOWORD(wParam) == ID_LOGON && HIWORD(wParam) == BN_CLICKED)
 		{
-			MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
-			qwe = 0;
+			//MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
+			iWindowType = CHAT_WINDOW;
 			SendMessage(hWnd, WM_CREATE, wParam, lParam);
+		}
+	}
+	break;
+	case WM_KEYUP: //FOR DEBUG
+	{
+		switch (wParam)
+		{
+		case VK_ESCAPE:
+		{
+			if (iWindowType == CHAT_WINDOW)
+			{
+				iWindowType = LOGIN_WINDOW;
+				SendMessage(hWnd, WM_CREATE, wParam, lParam);
+			}
+		}
+		break;
 		}
 	}
 	break;
 	case WM_DRAWITEM:
 	{
-		lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
-
-		if (lpdrawstLogon->hwndItem == hLogWnd)
+		if (iWindowType == LOGIN_WINDOW)
 		{
-			FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-			Gdiplus::Graphics gdiGrLogon(lpdrawstLogon->hDC);
-			gdiGrLogon.DrawImage(SimpleImgLoad.GetImg(ID_LOGON_DEF, hInstCopy), 0, 0, 48, 48);
-			SimpleImgLoad.Release();
+			lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
 
-			switch (lpdrawstLogon->CtlID)
+			if (lpdrawstLogon->hwndItem == hLogWnd)
 			{
-			case ID_LOGON:
-			{
-				if (lpdrawstLogon->itemState & ODS_FOCUS)
+				FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
+
+				gdiImg = new Gdiplus::Graphics(lpdrawstLogon->hDC);
+				gdiImg->DrawImage(SimpleImgLoad.GetImg(ID_LOGON_DEF, hInstCopy), 0, 0, 48, 48);
+				SimpleImgLoad.Release();
+
+				switch (lpdrawstLogon->CtlID)
 				{
-					FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
-					gdiGrLogon.DrawImage(SimpleImgLoad.GetImg(ID_LOGON_SET, hInstCopy), 0, 0, 48, 48);
-					SimpleImgLoad.Release();
+				case ID_LOGON:
+				{
+					if (lpdrawstLogon->itemState & ODS_FOCUS)
+					{
+						FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
+
+						gdiImg->DrawImage(SimpleImgLoad.GetImg(ID_LOGON_SET, hInstCopy), 0, 0, 48, 48);
+						SimpleImgLoad.Release();
+					}
 				}
-			}
-			break;
+
+				delete gdiImg;
+
+				break;
+				}
 			}
 		}
 	}
@@ -226,11 +288,19 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_GETMINMAXINFO:
 	{
-		pInfo = (LPMINMAXINFO)lParam;
-		StartWndSize = { 640, 480 };
-		pInfo->ptMinTrackSize = StartWndSize;
-		pInfo->ptMaxTrackSize = StartWndSize;
-		return 0;
+		if (iWindowType == LOGIN_WINDOW)
+		{
+			pInfo = (LPMINMAXINFO)lParam;
+			StartWndSize = { 640, 480 };
+			pInfo->ptMinTrackSize = StartWndSize;
+			pInfo->ptMaxTrackSize = StartWndSize;
+		}
+		else if (iWindowType == CHAT_WINDOW)
+		{
+			pInfo = (LPMINMAXINFO)lParam;
+			StartWndSize = { 800, 640 };
+			pInfo->ptMinTrackSize = StartWndSize;
+		}
 	}
 	break;
 	case WM_DESTROY:
