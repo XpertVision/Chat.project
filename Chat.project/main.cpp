@@ -6,7 +6,7 @@ LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 HINSTANCE hInstCopy;
-HWND hLogWnd;
+HWND hLogButton;
 HWND hTxt;
 HWND hLogin;
 HWND hPass;
@@ -70,7 +70,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		return 1;
 	}
 
-	hLogWnd = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
+	hLogButton = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
 	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, (HMENU)123, hInst, NULL);
 	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInst, NULL);
 
@@ -100,8 +100,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	wpPass = (WNDPROC)GetWindowLongPtr(hPass, GWLP_WNDPROC);
 	SetWindowLongPtr(hPass, GWLP_WNDPROC, (LONG_PTR)LoginPassProc);
 
-	wpLogon = (WNDPROC)GetWindowLongPtr(hLogWnd, GWLP_WNDPROC);
-	SetWindowLongPtr(hLogWnd, GWLP_WNDPROC, (LONG_PTR)LogonProc);
+	wpLogon = (WNDPROC)GetWindowLongPtr(hLogButton, GWLP_WNDPROC);
+	SetWindowLongPtr(hLogButton, GWLP_WNDPROC, (LONG_PTR)LogonProc);
 
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
@@ -163,7 +163,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
 			DestroyWindow(hLogin);
 			DestroyWindow(hPass);
-			DestroyWindow(hLogWnd);
+			DestroyWindow(hLogButton);
 
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
 		}
@@ -236,7 +236,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			lpdrawstLogon = (LPDRAWITEMSTRUCT)lParam;
 
-			if (lpdrawstLogon->hwndItem == hLogWnd)
+			if (lpdrawstLogon->hwndItem == hLogButton)
 			{
 				FillRect(lpdrawstLogon->hDC, &lpdrawstLogon->rcItem, CreateSolidBrush(RGB(4, 37, 65)));
 
@@ -268,17 +268,17 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_SETCURSOR:
 	{
 		static HWND hFocused(NULL);
-		if (hLogWnd == (HWND)wParam)
+		if (hLogButton == (HWND)wParam)
 		{
-			if (GetFocus() != hLogWnd)
+			if (GetFocus() != hLogButton)
 			{
 				hFocused = GetFocus();
-				SetFocus(hLogWnd);
+				SetFocus(hLogButton);
 			}
 		}
 		else
 		{
-			if (GetFocus() == hLogWnd)
+			if (GetFocus() == hLogButton)
 			{
 				SetFocus(hFocused);
 			}
@@ -344,7 +344,7 @@ LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	{
 		if (wParam == VK_TAB)
 		{
-			SetFocus(hLogWnd);
+			SetFocus(hLogButton);
 			break;
 		}
 		else if (search(wchAccesChar, wParam, sizeof(wchAccesChar)))
@@ -383,7 +383,7 @@ LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	default:
-		return CallWindowProc(wpLogon, hLogWnd, uMsg, wParam, lParam);
+		return CallWindowProc(wpLogon, hLogButton, uMsg, wParam, lParam);
 	}
 	return 0;
 }
