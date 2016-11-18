@@ -158,6 +158,13 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="LogAnim\Connecting2.png" />
+    <Image Include="LogAnim\Connecting3.png" />
+    <Image Include="LogAnim\Connecting4.png" />
+    <Image Include="LogAnim\Connecting5.png" />
+    <Image Include="LogAnim\Connecting6.png" />
+    <Image Include="LogAnim\Connecting7.png" />
+    <Image Include="LogAnim\ConnectingLast.png" />
     <Image Include="LogAnim\ConnectingStart.png" />
     <Image Include="Logo.png" />
     <Image Include="LogonDef.png" />

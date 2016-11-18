@@ -61,6 +61,27 @@
     <Image Include="LogAnim\ConnectingStart.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="LogAnim\Connecting2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\Connecting3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\Connecting4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\Connecting5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\Connecting6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\Connecting7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LogAnim\ConnectingLast.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chat.project.rc">
