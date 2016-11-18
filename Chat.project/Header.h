@@ -16,4 +16,6 @@
 
 #define ID_LOGON 777
 
+#define ID_LOG_ANIM_TIMER 3000
+
 #endif // !_HEADER_H_

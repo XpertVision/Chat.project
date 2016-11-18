@@ -210,6 +210,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			//MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
 			iWindowType = CHAT_WINDOW;
+			SetTimer(hWnd, ID_LOG_ANIM_TIMER, 50, NULL);
 			SendMessage(hWnd, WM_CREATE, wParam, lParam);
 		}
 	}
@@ -224,6 +225,40 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				iWindowType = LOGIN_WINDOW;
 				SendMessage(hWnd, WM_CREATE, wParam, lParam);
+			}
+		}
+		break;
+		}
+	}
+	break;
+	case WM_TIMER:
+	{
+		switch (wParam)
+		{
+		case ID_LOG_ANIM_TIMER:
+		{
+			static int iKillStep = 0;
+			static int iImg = ID_LOGIN_ANIM_START;
+			hdcMain = GetDC(hWnd);
+
+			gdiImg = new Gdiplus::Graphics(hdcMain);
+			gdiImg->DrawImage(SimpleImgLoad.GetImg(iImg, hInstCopy), 150, 200, 320, 180);
+			SimpleImgLoad.Release();
+
+			delete gdiImg;
+			ReleaseDC(hWnd, hdcMain);
+
+			iKillStep++;
+			if (iKillStep == 800)
+				KillTimer(hWnd, ID_LOG_ANIM_TIMER);
+
+			if (iImg < ID_LOGIN_ANIM_LAST)
+			{
+				iImg++;
+			}
+			else
+			{
+				iImg = ID_LOGIN_ANIM_START;
 			}
 		}
 		break;
