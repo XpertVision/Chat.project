@@ -70,39 +70,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 		return 1;
 	}
 
-	hLogButton = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInst, NULL);
-	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, (HMENU)123, hInst, NULL);
-	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInst, NULL);
-
-	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 16);
-	SendMessage(hPass, EM_EXLIMITTEXT, NULL, 24);
-	SendMessage(hLogin, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
-	SendMessage(hPass, EM_SETBKGNDCOLOR, NULL, RGB(200, 200, 200));
-	
-	wchar_t wFontName [] = L"Segoe UI";
-
-	CHARFORMAT2W reFormat;
-	reFormat.cbSize = sizeof(reFormat);
-	reFormat.crTextColor = RGB(24,65,233);
-	reFormat.bUnderlineType = NULL;
-	reFormat.dwMask = CFM_COLOR | CFM_SIZE | CFM_WEIGHT | CFM_FACE;
-	reFormat.dwEffects = NULL;
-	reFormat.yHeight = 220;
-	reFormat.wWeight = 200;
-	wcscpy_s(reFormat.szFaceName, sizeof(wFontName), wFontName);
-
-	SendMessage(hLogin, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
-	SendMessage(hPass, EM_SETCHARFORMAT, SCF_SELECTION, LPARAM(&reFormat));
-	
-	wpLogin = (WNDPROC)GetWindowLongPtr(hLogin, GWLP_WNDPROC);
-	SetWindowLongPtr(hLogin, GWLP_WNDPROC, (LONG_PTR)LoginEditProc);
-
-	wpPass = (WNDPROC)GetWindowLongPtr(hPass, GWLP_WNDPROC);
-	SetWindowLongPtr(hPass, GWLP_WNDPROC, (LONG_PTR)LoginPassProc);
-
-	wpLogon = (WNDPROC)GetWindowLongPtr(hLogButton, GWLP_WNDPROC);
-	SetWindowLongPtr(hLogButton, GWLP_WNDPROC, (LONG_PTR)LogonProc);
-
 	ShowWindow(hMainWnd, nCmdShow);
 	UpdateWindow(hMainWnd);
 
@@ -119,10 +86,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdcMain;
 	PAINTSTRUCT pstMain;
-	//RECT rMain(NULL);
 
 	LPDRAWITEMSTRUCT lpdrawstLogon = NULL;
-	//HDC hdcLogon;
 
 	HFONT hfSegoe = CreateFont(22, 0, 0, 0, 200, 0, 0, 0, OEM_CHARSET, OUT_STRING_PRECIS, CLIP_DEFAULT_PRECIS
 		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, L"Segoe UI");
@@ -140,6 +105,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (iWindowType == LOGIN_WINDOW)
 		{
+			InitHandles(hWnd);
+
 			hdcMain = GetDC(0);
 			int x, y;
 			x = GetDeviceCaps(hdcMain, HORZRES);
@@ -148,6 +115,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
 
 			ReleaseDC(0, hdcMain);
+
+			InvalidateRect(hWnd, NULL, TRUE);
+			SetWindowPos(hWnd, HWND_TOP, 0, 0, 640, 480, SWP_NOMOVE);
 		}
 		else if (iWindowType == CHAT_WINDOW)
 		{
@@ -156,16 +126,32 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			x = GetDeviceCaps(hdcMain, HORZRES);
 			y = GetDeviceCaps(hdcMain, VERTRES);
 
-			SetWindowPos(hWnd, NULL, ((x - 800) / 2), ((y - 640) / 2), 0, 0, SWP_NOSIZE);
+			SetWindowPos(hWnd, NULL, ((x - 800) / 2), ((y - 600) / 2), 0, 0, SWP_NOSIZE);
 
 			ReleaseDC(0, hdcMain);
 
 			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
+			HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
+			HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_THICKFRAME, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
+
+			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
+		}
+		else if (iWindowType == CONNECTING_WINDOW)
+		{
+			hdcMain = GetDC(0);
+			int x, y;
+			x = GetDeviceCaps(hdcMain, HORZRES);
+			y = GetDeviceCaps(hdcMain, VERTRES);
+
+			SetWindowPos(hWnd, NULL, ((x - 640) / 2), ((y - 480) / 2), 0, 0, SWP_NOSIZE);
+
+			ReleaseDC(0, hdcMain);
+
 			DestroyWindow(hLogin);
 			DestroyWindow(hPass);
 			DestroyWindow(hLogButton);
 
-			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
+			InvalidateRect(hWnd, NULL, TRUE);
 		}
 	}
 	break;
@@ -202,14 +188,21 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			EndPaint(hWnd, &pstMain);
 		}
+		else if (iWindowType == CONNECTING_WINDOW)
+		{
+			hdcMain = BeginPaint(hWnd, &pstMain);
+
+			SetBkColor(hdcMain, RGB(4, 37, 65));
+
+			EndPaint(hWnd, &pstMain);
+		}
 	}
 	break;
 	case WM_COMMAND:
 	{
 		if (LOWORD(wParam) == ID_LOGON && HIWORD(wParam) == BN_CLICKED)
 		{
-			//MessageBox(NULL, L"LOGINING", L"Enter", MB_OK);
-			iWindowType = CHAT_WINDOW;
+			iWindowType = CONNECTING_WINDOW;
 			SetTimer(hWnd, ID_LOG_ANIM_TIMER, 50, NULL);
 			SendMessage(hWnd, WM_CREATE, wParam, lParam);
 		}
@@ -242,15 +235,20 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			hdcMain = GetDC(hWnd);
 
 			gdiImg = new Gdiplus::Graphics(hdcMain);
-			gdiImg->DrawImage(SimpleImgLoad.GetImg(iImg, hInstCopy), 150, 200, 320, 180);
+			gdiImg->DrawImage(SimpleImgLoad.GetImg(iImg, hInstCopy), 160, 150, 320, 180);
 			SimpleImgLoad.Release();
 
 			delete gdiImg;
 			ReleaseDC(hWnd, hdcMain);
 
 			iKillStep++;
-			if (iKillStep == 800)
+			if (iKillStep == 8)
+			{
+				iWindowType = CHAT_WINDOW;
+				iKillStep = 0;
 				KillTimer(hWnd, ID_LOG_ANIM_TIMER);
+				SendMessage(hWnd, WM_CREATE, wParam, lParam);
+			}
 
 			if (iImg < ID_LOGIN_ANIM_LAST)
 			{
@@ -323,7 +321,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_GETMINMAXINFO:
 	{
-		if (iWindowType == LOGIN_WINDOW)
+		if (iWindowType == LOGIN_WINDOW || iWindowType == CONNECTING_WINDOW)
 		{
 			pInfo = (LPMINMAXINFO)lParam;
 			StartWndSize = { 640, 480 };
