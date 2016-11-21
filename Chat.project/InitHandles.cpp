@@ -29,7 +29,7 @@ void InitHandles(HWND hMainWnd)
 
 	static CHARFORMAT2W reFormat;
 	reFormat.cbSize = sizeof(reFormat);
-	reFormat.crTextColor = RGB(24, 65, 233);
+	reFormat.crTextColor = RGB(4, 37, 65);//24, 65, 233
 	reFormat.bUnderlineType = NULL;
 	reFormat.dwMask = CFM_COLOR | CFM_SIZE | CFM_WEIGHT | CFM_FACE;
 	reFormat.dwEffects = NULL;

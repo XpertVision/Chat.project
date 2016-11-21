@@ -131,8 +131,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ReleaseDC(0, hdcMain);
 
 			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
-			HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
-			HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_THICKFRAME, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
+			//HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
+			//HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
 
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
 		}
