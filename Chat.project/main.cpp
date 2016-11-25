@@ -185,6 +185,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			hdcMain = BeginPaint(hWnd, &pstMain);
 
 			SetBkColor(hdcMain, RGB(4, 37, 65));
+			//RoundRect(hdcMain, 20, 250, 400, 350, 50, 50);
+			
 
 			EndPaint(hWnd, &pstMain);
 		}
