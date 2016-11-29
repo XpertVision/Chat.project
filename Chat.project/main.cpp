@@ -61,7 +61,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 	hInstCopy = hInst;
 	nCmdShowCopy = nCmdShow;
 
-	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+	hMainWnd = CreateWindowEx(NULL, mainWndClassName, L"Chat.project", MY_LOG_WND_STYLE, CW_USEDEFAULT, CW_USEDEFAULT,
 		640, 480, NULL, NULL, hInst, NULL);
 
 	if (!hMainWnd)
@@ -107,6 +107,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			InitHandles(hWnd);
 
+			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~(WS_MAXIMIZEBOX));
+
 			hdcMain = GetDC(0);
 			int x, y;
 			x = GetDeviceCaps(hdcMain, HORZRES);
@@ -121,6 +123,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else if (iWindowType == CHAT_WINDOW)
 		{
+			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_MAXIMIZEBOX);
+
 			hdcMain = GetDC(0);
 			int x, y;
 			x = GetDeviceCaps(hdcMain, HORZRES);
