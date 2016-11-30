@@ -20,22 +20,14 @@ int nCmdShowCopy;
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
-	HINSTANCE hRTFLib;
-	hRTFLib = LoadLibrary(L"RICHED32.DLL");
+	GdiPlusInit();
 
-	if (!hRTFLib)
-	{
-		MessageBox(NULL, L"RICHED32.DLL don't load", L"Error", MB_OK);
+	if (!PlugRiched32())
 		return 1;
-	}
 
 	MSG mMessage;
 
 	TCHAR mainWndClassName[] = L"Chat.project";
-
-	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR gdiplusToken;
-	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
 	WNDCLASSEX wMainClass;
 	ZeroMemory(&wMainClass, sizeof(wMainClass));
@@ -109,6 +101,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~(WS_MAXIMIZEBOX));
 
+			//SetMenu(hWnd, NULL);
+
 			hdcMain = GetDC(0);
 			int x, y;
 			x = GetDeviceCaps(hdcMain, HORZRES);
@@ -120,25 +114,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			InvalidateRect(hWnd, NULL, TRUE);
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 640, 480, SWP_NOMOVE);
-		}
-		else if (iWindowType == CHAT_WINDOW)
-		{
-			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_MAXIMIZEBOX);
-
-			hdcMain = GetDC(0);
-			int x, y;
-			x = GetDeviceCaps(hdcMain, HORZRES);
-			y = GetDeviceCaps(hdcMain, VERTRES);
-
-			SetWindowPos(hWnd, NULL, ((x - 800) / 2), ((y - 600) / 2), 0, 0, SWP_NOSIZE);
-
-			ReleaseDC(0, hdcMain);
-
-			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
-			//HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
-			//HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
-
-			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOMOVE);
 		}
 		else if (iWindowType == CONNECTING_WINDOW)
 		{
@@ -156,6 +131,36 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			DestroyWindow(hLogButton);
 
 			InvalidateRect(hWnd, NULL, TRUE);
+		}
+		else if (iWindowType == CHAT_WINDOW)
+		{
+			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_MAXIMIZEBOX);
+
+			static HMENU hChatMenu = LoadMenu(hInstCopy, MAKEINTRESOURCE(IDR_MENU));
+			static MENUINFO menuinf;
+			ZeroMemory(&menuinf, sizeof(MENUINFO));
+			menuinf.cbSize = sizeof(MENUINFO);
+			menuinf.fMask = MIM_BACKGROUND;
+			menuinf.dwStyle = MF_OWNERDRAW;
+			menuinf.hbrBack = CreateSolidBrush(RGB(20, 100, 200));
+
+			SetMenuInfo(hChatMenu, &menuinf);
+			SetMenu(hWnd, hChatMenu);
+
+			hdcMain = GetDC(0);
+			int x, y;
+			x = GetDeviceCaps(hdcMain, HORZRES);
+			y = GetDeviceCaps(hdcMain, VERTRES);
+
+			SetWindowPos(hWnd, NULL, ((x - 900) / 2), ((y - 550) / 2), 0, 0, SWP_NOSIZE);
+
+			ReleaseDC(0, hdcMain);
+
+			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
+			//HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
+			//HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
+
+			SetWindowPos(hWnd, HWND_TOP, 0, 0, 900, 550, SWP_NOMOVE);
 		}
 	}
 	break;
@@ -337,7 +342,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		else if (iWindowType == CHAT_WINDOW)
 		{
 			pInfo = (LPMINMAXINFO)lParam;
-			StartWndSize = { 800, 640 };
+			StartWndSize = { 900, 550 };
 			pInfo->ptMinTrackSize = StartWndSize;
 		}
 	}

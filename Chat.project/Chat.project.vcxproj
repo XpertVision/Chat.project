@@ -149,16 +149,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GdiPlusInit.cpp" />
     <ClCompile Include="InitHandles.cpp" />
     <ClCompile Include="LoadImgRes.cpp" />
     <ClCompile Include="LogPassChar.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlugRiched32.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GdiPlusInit.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="InitHandles.h" />
     <ClInclude Include="LoadImgRes.h" />
     <ClInclude Include="LogPassChar.h" />
+    <ClInclude Include="PlugRiched32.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

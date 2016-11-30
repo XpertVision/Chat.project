@@ -11,6 +11,8 @@
 #include "LogPassChar.h"
 #include "LoadImgRes.h"
 #include "InitHandles.h"
+#include "PlugRiched32.h"
+#include "GdiPlusInit.h"
 
 #define LOGIN_WINDOW      0
 #define CHAT_WINDOW       1
