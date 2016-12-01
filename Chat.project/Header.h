@@ -13,6 +13,10 @@
 #include "InitHandles.h"
 #include "PlugRiched32.h"
 #include "GdiPlusInit.h"
+#include "MyProcedures.h"
+#include "Fonts.h"
+#include "InitMenu.h"
+#include "GlobalExterns.h"
 
 #define LOGIN_WINDOW      0
 #define CHAT_WINDOW       1

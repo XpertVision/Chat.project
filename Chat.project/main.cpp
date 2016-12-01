@@ -1,22 +1,6 @@
 #include "Header.h"
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-HINSTANCE hInstCopy;
-HWND hLogButton;
-HWND hTxt;
-HWND hLogin;
-HWND hPass;
-WNDPROC wpLogin;
-WNDPROC wpPass;
-WNDPROC wpLogon;
-
-HWND hMainWnd;
-
-int nCmdShowCopy;
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -24,6 +8,9 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevInst, LPSTR lpCmdLine, int nCm
 
 	if (!PlugRiched32())
 		return 1;
+
+	CreateSegoe_22();
+	InitMenus();
 
 	MSG mMessage;
 
@@ -81,9 +68,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	LPDRAWITEMSTRUCT lpdrawstLogon = NULL;
 
-	HFONT hfSegoe = CreateFont(22, 0, 0, 0, 200, 0, 0, 0, OEM_CHARSET, OUT_STRING_PRECIS, CLIP_DEFAULT_PRECIS
-		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, L"Segoe UI");
-
 	LPMINMAXINFO pInfo = NULL;
 	POINT StartWndSize;
 
@@ -101,7 +85,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~(WS_MAXIMIZEBOX));
 
-			//SetMenu(hWnd, NULL);
+			SetMenu(hWnd, hLogMenu);
 
 			hdcMain = GetDC(0);
 			int x, y;
@@ -117,6 +101,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else if (iWindowType == CONNECTING_WINDOW)
 		{
+			SetMenu(hWnd, NULL);
 			hdcMain = GetDC(0);
 			int x, y;
 			x = GetDeviceCaps(hdcMain, HORZRES);
@@ -136,15 +121,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SetWindowLongPtr(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_MAXIMIZEBOX);
 
-			static HMENU hChatMenu = LoadMenu(hInstCopy, MAKEINTRESOURCE(IDR_MENU));
-			static MENUINFO menuinf;
-			ZeroMemory(&menuinf, sizeof(MENUINFO));
-			menuinf.cbSize = sizeof(MENUINFO);
-			menuinf.fMask = MIM_BACKGROUND;
-			menuinf.dwStyle = MF_OWNERDRAW;
-			menuinf.hbrBack = CreateSolidBrush(RGB(20, 100, 200));
-
-			SetMenuInfo(hChatMenu, &menuinf);
 			SetMenu(hWnd, hChatMenu);
 
 			hdcMain = GetDC(0);
@@ -173,7 +149,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetTextColor(hdcMain, RGB(200, 200, 200));
 			SetBkColor(hdcMain, RGB(4, 37, 65));
 
-			SelectObject(hdcMain, hfSegoe);
+			SelectObject(hdcMain, hfSegoe_22);
 
 			SetTextAlign(hdcMain, TA_RIGHT);
 			TextOutW(hdcMain, 210, 270, L"Password", 8);
@@ -355,79 +331,4 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return NULL;
-}
-
-LRESULT CALLBACK LoginEditProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_CHAR:
-	{
-		if (wParam == VK_TAB)
-		{
-			SetFocus(hPass);
-		}
-		else if (search(wchAccesChar, wParam, sizeof(wchAccesChar)))
-		{
-			return CallWindowProc(wpLogin, hWnd, uMsg, wParam, lParam);
-		}
-	}
-	break;
-	default:
-		return CallWindowProc(wpLogin, hWnd, uMsg, wParam, lParam);
-	}
-
-	return 0;
-}
-
-LRESULT CALLBACK LoginPassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_CHAR:
-	{
-		if (wParam == VK_TAB)
-		{
-			SetFocus(hLogButton);
-			break;
-		}
-		else if (search(wchAccesChar, wParam, sizeof(wchAccesChar)))
-		{
-			return CallWindowProc(wpPass, hWnd, uMsg, wParam, lParam);
-		}
-	}
-	break;
-	default:
-		return CallWindowProc(wpPass, hWnd, uMsg, wParam, lParam);
-	}
-
-	return 0;
-}
-
-LRESULT CALLBACK LogonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_KEYDOWN:
-	if (wParam == VK_TAB)
-		{
-			SetFocus(hLogin);
-		}
-		else if (wParam == VK_RETURN)
-		{
-			SendNotifyMessage(hMainWnd, WM_COMMAND, ID_LOGON | BN_CLICKED, NULL);
-		}
-	break;
-	case WM_COMMAND:
-	{
-		if (LOWORD(wParam) == ID_LOGON)
-		{
-			MessageBox(NULL, L"YES\n!", L"OK", MB_OK);
-		}
-	}
-	break;
-	default:
-		return CallWindowProc(wpLogon, hLogButton, uMsg, wParam, lParam);
-	}
-	return 0;
 }
