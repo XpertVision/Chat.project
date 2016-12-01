@@ -132,11 +132,15 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			ReleaseDC(0, hdcMain);
 
-			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
-			//HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 200, 480, 585, 121, hWnd, (HMENU)12345, hInstCopy, NULL);
-			//HWND hMainChat = CreateWindow(L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER, 0, 0, 200, 601, hWnd, (HMENU)141231, hInstCopy, NULL);
-
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 900, 550, SWP_NOMOVE);
+
+			RECT recTest;
+			GetClientRect(hWnd, &recTest);
+			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
+			HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE , recTest.right - 560, recTest.bottom - 110, 550, 80, hWnd, (HMENU)12345, hInstCopy, NULL);
+			HWND hContactsList = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE, recTest.left + 10, 10, 270, recTest.bottom - 20, hWnd, (HMENU)141231, hInstCopy, NULL);
+
+			//SetWindowPos(hWnd, HWND_TOP, 0, 0, 900, 550, SWP_NOMOVE);
 		}
 	}
 	break;
@@ -172,7 +176,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetBkColor(hdcMain, RGB(4, 37, 65));
 			//RoundRect(hdcMain, 20, 250, 400, 350, 50, 50);
 			
-
 			EndPaint(hWnd, &pstMain);
 		}
 		else if (iWindowType == CONNECTING_WINDOW)
