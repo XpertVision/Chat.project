@@ -137,9 +137,21 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			RECT recTest;
 			GetClientRect(hWnd, &recTest);
 			//CloseWindow(hLogin); VERY FUNY RESULT! ^^
-			HWND hTypeMessage = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE , recTest.right - 560, recTest.bottom - 110, 550, 80, hWnd, (HMENU)12345, hInstCopy, NULL);
-			HWND hContactsList = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE, recTest.left + 10, 10, 270, recTest.bottom - 20, hWnd, (HMENU)141231, hInstCopy, NULL);
+			HWND hTypeMessage = CreateWindow(L"RICHEDIT50W", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE , recTest.right - 560, recTest.bottom - 110, 550, 80, hWnd, (HMENU)12345, hInstCopy, NULL);
+			HWND hContactsList = CreateWindow(L"RICHEDIT50W", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE, recTest.left + 10, 10, 270, recTest.bottom - 20, hWnd, (HMENU)141231, hInstCopy, NULL);
+			
+			recTest.top += 40;
+			CHARRANGE ch;
+			ch.cpMin = 0;
+			ch.cpMax = -1;
 
+			FORMATRANGE ft;
+			ft.hdc = GetDC(hTypeMessage);
+			ft.rc = recTest;
+			ft.rcPage = recTest;
+			ft.hdcTarget = NULL;
+			ft.chrg = ch;
+			SendMessage(hTypeMessage, EM_FORMATRANGE, 1, (LPARAM)&ft);
 			//SetWindowPos(hWnd, HWND_TOP, 0, 0, 900, 550, SWP_NOMOVE);
 		}
 	}

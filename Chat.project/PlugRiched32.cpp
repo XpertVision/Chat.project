@@ -2,11 +2,11 @@
 
 bool PlugRiched32()
 {
-	HINSTANCE hRTFLib = LoadLibrary(L"RICHED32.DLL");
+	HINSTANCE hRTFLib = LoadLibrary(L"MSFTEDIT.dll");
 
 	if (!hRTFLib)
 	{
-		MessageBox(NULL, L"RICHED32.DLL don't load", L"Error", MB_OK);
+		MessageBox(NULL, L"Msftedit.dll don't load", L"Error", MB_OK);
 		return FALSE;
 	}
 

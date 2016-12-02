@@ -3,8 +3,8 @@
 void InitHandles(HWND hMainWnd)
 {
 	hLogButton = CreateWindow(L"BUTTON", NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, 296, 340, 48, 48, hMainWnd, (HMENU)ID_LOGON, hInstCopy, NULL);
-	hLogin = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, (HMENU)123, hInstCopy, NULL);
-	hPass = CreateWindow(L"RICHEDIT", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInstCopy, NULL);
+	hLogin = CreateWindow(L"RICHEDIT50W", NULL, WS_CHILD | WS_VISIBLE, 220, 191, 200, 20, hMainWnd, (HMENU)123, hInstCopy, NULL);
+	hPass = CreateWindow(L"RICHEDIT50W", NULL, WS_CHILD | WS_VISIBLE | ES_PASSWORD, 220, 271, 200, 20, hMainWnd, NULL, hInstCopy, NULL);
 
 	SendMessage(hLogin, EM_EXLIMITTEXT, NULL, 16);
 	SendMessage(hPass, EM_EXLIMITTEXT, NULL, 24);
